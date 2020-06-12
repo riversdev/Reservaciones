@@ -2,10 +2,10 @@ $(document).ready(function () {
 
 });
 
-function saveAppointment(name, email, number, issue) {
+function guardarPeticion(name, email, number, issue) {
     $.ajax({
         type: "POST",
-        url: "templates/saveAppointment.php",
+        url: "templates/guardarPeticion.php",
         data: {
             name,
             email,
@@ -16,10 +16,10 @@ function saveAppointment(name, email, number, issue) {
             console.error("Error peticion ajax para guardar la cita");
         },
         success: function (data) {
-            document.getElementById("formAppointment").reset();
+            //document.getElementById("formAppointment").reset();
             $("#res").empty();
             $("#res").append(data);
-            alertify.success("Cita guardada exitosamente !");
+            alertify.alert('PETICIÓN ENVIADA !', 'En breve le haremos saber la fecha y hora de su cita madiante sus datos de contacto ingresados.');
         }
     });
 }
