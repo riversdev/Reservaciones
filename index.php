@@ -5,12 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reservaciones</title>
-  <!-- jQuery y Popper -->
-  <script src="static/bootstrap/jquery-3.5.1.slim.min.js"></script>
-  <script src="static/bootstrap/popper.min.js"></script>
   <!-- BOOTSTRAP 4.5.0 -->
   <link rel="stylesheet" href="static/bootstrap/css/bootstrap.css">
+  <script src="static/js/jquery-3.5.1.js"></script>
   <script src="static/bootstrap/js/bootstrap.js"></script>
+  <!--<script src="static/js/popper.min.js"></script>-->
   <!-- ALERTIFY 1.13.1 -->
   <link rel="stylesheet" href="static/alertify/css/alertify.css">
   <link rel="stylesheet" href="static/alertify/css/themes/default.min.css">
@@ -38,7 +37,7 @@
                 <p class="card-text"><small class="text-muted">Ingresa tus datos de contacto y te haremos saber la fecha de reunión.</small></p>
               </div>
             </div>
-            <form class="needs-validation pt-4" novalidate>
+            <form id="formAppointment" class="needs-validation pt-4" novalidate>
               <div class="form-row">
                 <div class="col-md-4 mb-3">
                   <label for="txtName">Nombre</label>
@@ -86,16 +85,17 @@
               <div class="text-right">
                 <button class="btn btn-outline-dark" type="submit">Agendar</button>
               </div>
+              <div id="res"></div>
             </form>
 
             <script>
-              // Example starter JavaScript for disabling form submissions if there are invalid fields
+              // Inicio de JavaScript para deshabilitar los envíos de formularios si hay campos no válidos
               (function() {
                 'use strict';
                 window.addEventListener('load', function() {
-                  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                  // Obtener todos los formularios a los que se quiere aplicar estilos personalizados de validación Bootstrap
                   var forms = document.getElementsByClassName('needs-validation');
-                  // Loop over them and prevent submission
+                  // Bucle sobre los formularios y evitar el envio o enviar datos
                   var validation = Array.prototype.filter.call(forms, function(form) {
                     form.addEventListener('submit', function(event) {
                       if (form.checkValidity() === false) {
@@ -103,7 +103,11 @@
                         event.stopPropagation();
                       } else {
                         event.preventDefault();
-                        guardarCita();
+                        let name = document.getElementById("txtName").value;
+                        let email = document.getElementById("txtEmail").value;
+                        let number = document.getElementById("txtNumber").value;
+                        let issue = document.getElementById("txtIssue").value;
+                        saveAppointment(name, email, number, issue);
                       }
                       form.classList.add('was-validated');
                     }, false);
