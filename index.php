@@ -31,7 +31,7 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -39,16 +39,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <div class="mr-auto"></div>
       <nav class="navbar-nav my-2 my-lg-0">
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link" id="nav-petitions-tab" data-toggle="tab" href="#nav-petitions" role="tab" aria-controls="nav-petitions" aria-selected="true">Peticiones</a>
-          <a class="nav-item nav-link active" id="nav-citas-tab" data-toggle="tab" href="#nav-citas" role="tab" aria-controls="nav-citas" aria-selected="false">Citas</a>
+        <div class="nav" id="nav-tab" role="tablist">
+          <a class="nav-item nav-link active" id="nav-petitions-tab" data-toggle="tab" href="#nav-petitions" role="tab" aria-controls="nav-petitions" aria-selected="true">Peticiones</a>
+          <a class="nav-item nav-link" id="nav-citas-tab" data-toggle="tab" href="#nav-citas" role="tab" aria-controls="nav-citas" aria-selected="false">Citas</a>
         </div>
       </nav>
     </div>
   </nav>
 
   <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade" id="nav-petitions" role="tabpanel" aria-labelledby="nav-petitions-tab">
+    <div class="tab-pane fade show active" id="nav-petitions" role="tabpanel" aria-labelledby="nav-petitions-tab">
       <div class="container">
         <div class="row justify-content-center pt-5">
           <div class="card mb-3" style="width: 80%;">
@@ -119,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div class="tab-pane fade show active" id="nav-citas" role="tabpanel" aria-labelledby="nav-citas-tab">
+    <div class="tab-pane fade active" id="nav-citas" role="tabpanel" aria-labelledby="nav-citas-tab">
       <div class="p-3">
         <div class="row justify-content-center" style="height:85vh;">
           <div class="col-3">
