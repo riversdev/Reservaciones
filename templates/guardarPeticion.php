@@ -12,10 +12,4 @@ $SQL = "INSERT INTO peticiones (nombre, email, tel, asunto, marcaDeTiempo)
         VALUES ('$name', '$email', $number, '$issue', '$marcaDeTiempo')";
 $stmt = Conexion::conectar()->prepare($SQL);
 $stmt->execute();
-
-// echo '
-// <script>
-//     alert("Funciona !");
-// </script>
-// ';
 ?>
