@@ -67,7 +67,7 @@ if (count($resultado) == 0) {
                                     <div class="input-group-prepend">
                                     <div class="input-group-text">Inicio</div>
                                     </div>
-                                    <input type="time" class="form-control" id="txtHourStartAdd" min="08:00" max="20:00" value="00:00" required>
+                                    <input type="time" class="form-control" id="txtHourStartAdd' . $row['idPeticion'] . '" min="08:00" max="20:00" value="00:00" required>
                                     <div class="valid-feedback">
                                     Correcto!
                                     </div>
@@ -81,7 +81,7 @@ if (count($resultado) == 0) {
                                     <div class="input-group-prepend">
                                     <div class="input-group-text">Fin</div>
                                     </div>
-                                    <input type="time" class="form-control" id="txtHourEndAdd" min="08:00" max="20:00" value="00:00" required>
+                                    <input type="time" class="form-control" id="txtHourEndAdd' . $row['idPeticion'] . '" min="08:00" max="20:00" value="00:00" required>
                                     <div class="valid-feedback">
                                     Correcto!
                                     </div>
@@ -155,6 +155,11 @@ if (count($resultado) == 0) {
                     </div>
                 </div>
             </div>
+            <script>
+            $("#txtHourEndAdd' . $row['idPeticion'] . '").on("click", function () {
+                insertarHoraFinal("txtHourStartAdd' . $row['idPeticion'] . '","txtHourEndAdd' . $row['idPeticion'] . '");
+            });
+            </script>
         ';
     }
     echo '
@@ -162,6 +167,9 @@ if (count($resultado) == 0) {
             var forms = document.getElementsByClassName("needs-validation");
             var validation = Array.prototype.filter.call(forms, function(form) {
                 form.addEventListener("submit", function(event) {
+                    let i = "txtHourStartAdd" + form[0].value;
+                    let f = "txtHourEndAdd" + form[0].value;
+                    insertarHoraFinal(i,f);
                     if (form.checkValidity() === false) {
                         event.preventDefault();
                         event.stopPropagation();

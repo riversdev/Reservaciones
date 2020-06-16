@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let nuevoTiempo;
     // CONSULTAR PETICIONES PENDIENTES
     buscarPeticiones();
 
@@ -52,7 +53,30 @@ $(document).ready(function () {
             });
     });
 
+    // CAMBIO DE HORA MINIMO EN INPUT TIME DE HORA DE TERMINO
+    $('#eventForHourEnd').on('click', function () {
+        insertarHoraFinal("eventForHourStart", "eventForHourEnd");
+    });
+
 });
+
+function insertarHoraFinal(start, end) {
+    console.log(start + "," + end);
+
+    let newTime = new Date('2000-01-01T' + $('#' + start).val());
+    newTime.setMinutes(newTime.getMinutes() + 1);
+    let horas = newTime.getHours();
+    let minutos = newTime.getMinutes();
+    if (horas < 10) {
+        horas = '0' + horas;
+    }
+    if (minutos < 10) {
+        minutos = '0' + minutos;
+    }
+    nuevoTiempo = horas + ':' + minutos;
+    $('#' + end).attr("min", nuevoTiempo);
+    console.log("Nuevo tiempo->" + nuevoTiempo);
+}
 
 async function buscarPeticiones() {
     $.ajax({

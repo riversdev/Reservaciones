@@ -299,6 +299,7 @@
       // Bucle sobre los formularios y evitar el envio o enviar datos
       var validation = Array.prototype.filter.call(forms, function(form) {
         form.addEventListener('submit', function(event) {
+          insertarHoraFinal("eventForHourStart", "eventForHourEnd"); // ADELANTAR UN MINUTO A LA HORA DE INICIO PARA LA HORA DE FIN
           if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
@@ -327,7 +328,23 @@
       });
     }, false);
   })();
+
+  // PLUGIN RELOJ
   $(".clockpicker").clockpicker();
+
+  // FECHA ACTUAL
+  var f = new Date();
+  let meses = f.getMonth() + 1;
+  let dias = f.getDate();
+  if (meses < 10) {
+    meses = '0' + meses;
+  }
+  if (dias < 10) {
+    dias = '0' + dias;
+  }
+  let fechaActual = f.getFullYear() + '-' + meses + "-" + dias;
+  console.log("actual:" + fechaActual);
+
 
   // CALENDARIO
   $(document).ready(function() {
@@ -336,29 +353,34 @@
       header: {
         left: 'prevYear,prev,next,nextYear today',
         center: 'title',
-        right: 'month,basicWeek,basicDay, listWeek',
+        right: 'month,basicWeek,basicDay,listWeek',
       },
       dayClick: function(date, jsEvent, view) {
-        $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
-        $('#eventForDate').removeAttr("disabled");
-        $('#eventForHourStart').removeAttr("disabled");
-        $('#eventForHourEnd').removeAttr("disabled");
-        $('#eventForName').removeAttr("disabled");
-        $('#eventForEmail').removeAttr("disabled");
-        $('#eventForTel').removeAttr("disabled");
-        $('#eventForIssue').removeAttr("disabled");
-        $("#btnEventCancel").addClass("d-none");
-        $("#btnEventEdit").addClass("d-none");
-        $("#btnEventDelete").addClass("d-none");
-        $("#btnEventAgendar").removeClass("d-none");
-        document.getElementById("formEvents").reset();
-        $('#eventForDate').val(date.format());
-        $('#eventForHourStart').val("00:00");
-        $('#eventForHourEnd').val("00:00");
-        $("#eventForStatus").val("agendar");
-        $("#rowIssue").removeClass("d-none");
-        $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
-        $('#modalEvents').modal();
+        if (date.format() >= fechaActual) {
+          $('#eventForHourEnd').attr("min", "08:00");
+          $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
+          $('#eventForDate').removeAttr("disabled");
+          $('#eventForHourStart').removeAttr("disabled");
+          $('#eventForHourEnd').removeAttr("disabled");
+          $('#eventForName').removeAttr("disabled");
+          $('#eventForEmail').removeAttr("disabled");
+          $('#eventForTel').removeAttr("disabled");
+          $('#eventForIssue').removeAttr("disabled");
+          $("#btnEventCancel").addClass("d-none");
+          $("#btnEventEdit").addClass("d-none");
+          $("#btnEventDelete").addClass("d-none");
+          $("#btnEventAgendar").removeClass("d-none");
+          document.getElementById("formEvents").reset();
+          $('#eventForDate').val(date.format());
+          $('#eventForHourStart').val("00:00");
+          $('#eventForHourEnd').val("00:00");
+          $("#eventForStatus").val("agendar");
+          $("#rowIssue").removeClass("d-none");
+          $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
+          $('#modalEvents').modal();
+        } else {
+          alertify.error("Imposible agendar cita");
+        }
       },
       events: 'templates/crudCalendario.php',
       eventClick: function(calEvent, jsEvent, view) {
@@ -378,6 +400,7 @@
         $("#eventForStatus").val("editar");
         $("#rowIssue").addClass("d-none");
         $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
+        insertarHoraFinal("eventForHourStart", "eventForHourEnd");
         $('#modalEvents').modal();
       },
       editable: true,
