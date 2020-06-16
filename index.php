@@ -343,8 +343,6 @@
     dias = '0' + dias;
   }
   let fechaActual = f.getFullYear() + '-' + meses + "-" + dias;
-  console.log("actual:" + fechaActual);
-
 
   // CALENDARIO
   $(document).ready(function() {

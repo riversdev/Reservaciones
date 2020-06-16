@@ -61,8 +61,6 @@ $(document).ready(function () {
 });
 
 function insertarHoraFinal(start, end) {
-    console.log(start + "," + end);
-
     let newTime = new Date('2000-01-01T' + $('#' + start).val());
     newTime.setMinutes(newTime.getMinutes() + 1);
     let horas = newTime.getHours();
@@ -75,7 +73,6 @@ function insertarHoraFinal(start, end) {
     }
     nuevoTiempo = horas + ':' + minutos;
     $('#' + end).attr("min", nuevoTiempo);
-    console.log("Nuevo tiempo->" + nuevoTiempo);
 }
 
 async function buscarPeticiones() {
