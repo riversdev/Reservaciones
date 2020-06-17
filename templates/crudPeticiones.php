@@ -86,7 +86,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Fecha</div>
                                             </div>
-                                            <input type="date" class="form-control" id="txtDateAdd" min="' . date('Y-m-d') . '" value="" required>
+                                            <input type="date" class="form-control" id="txtDateAdd" min="' . date("Y-m-d",strtotime(date("Y-m-d")."- 1 days")) . '" value="" required>
                                             <div class="valid-feedback">
                                             Correcto!
                                             </div>
@@ -222,7 +222,6 @@ switch ($accion) {
                     var forms = document.getElementsByClassName("needs-validation");
                     var validation = Array.prototype.filter.call(forms, function(form) {
                         form.addEventListener("submit", function(event) {
-                            console.log(form);
                             let i = "txtHourStartAdd" + form[0].value;
                             let f = "txtHourEndAdd" + form[0].value;
                             insertarHoraFinal(i,f);
