@@ -7,28 +7,39 @@
   <title>Reservaciones</title>
   <!-- BOOTSTRAP 4.5.0 -->
   <link rel="stylesheet" href="static/bootstrap/css/bootstrap.css">
-  <script src="static/js/jquery-3.5.1.js"></script>
-  <script src="static/fullcalendar/js/moment.min.js"></script>
-  <script src="static/bootstrap/js/bootstrap.js"></script>
-  <!--<script src="static/js/popper.min.js"></script>-->
+  <!-- DATATABLES 1.10.21 -->
+  <link rel="stylesheet" href="static/datatables/datatables.css">
   <!-- ALERTIFY 1.13.1 -->
   <link rel="stylesheet" href="static/alertify/css/alertify.css">
   <link rel="stylesheet" href="static/alertify/css/themes/default.min.css">
-  <script src="static/alertify/alertify.js"></script>
   <!-- FONTAWESOME-FREE-5.13.0-web -->
   <link rel="stylesheet" href="static/fontawesome/css/all.css">
-  <script src="static/fontawesome/js/all.js"></script>
   <!-- FULLCALLENDAR -->
   <link rel="stylesheet" href="static/fullcalendar/css/fullcalendar.css">
+  <!-- CLOCKPICKER -->
+  <link rel="stylesheet" href="static/clockpicker/bootstrap-clockpicker.css">
+
+  <!-- jQuery 3.5.1 -->
+  <script src="static/js/jquery.js"></script>
+  <!-- CUSTOM JS -->
+  <script src="static/js/main.js"></script>
+  <!-- DATATABLES 1.10.21 -->
+  <script src="static/datatables/datatables.js"></script>
+  <!-- ALERTIFY 1.13.1 -->
+  <script src="static/alertify/alertify.js"></script>
+  <!-- FONTAWESOME-FREE-5.13.0-web -->
+  <script src="static/fontawesome/js/all.js"></script>
+  <!-- FULLCALLENDAR -->
+  <script src="static/fullcalendar/js/moment.min.js"></script>
   <script src="static/fullcalendar/js/fullcalendar.js"></script>
   <script src="static/fullcalendar/js/es.js"></script>
   <!-- CLOCKPICKER -->
-  <link rel="stylesheet" href="static/clockpicker/bootstrap-clockpicker.css">
   <script src="static/clockpicker/bootstrap-clockpicker.js"></script>
   <!-- SMTP JS -->
   <script src="static/js/smtp.js"></script>
-  <!-- CUSTOM JS -->
-  <script src="static/js/main.js"></script>
+  <!-- BOOTSTRAP 4.5.0 -->
+  <script src="static/bootstrap/js/bootstrap.bundle.js"></script>
+  <script src="static/bootstrap/js/bootstrap.js"></script>
 </head>
 
 <body>
@@ -125,7 +136,7 @@
       <div class="p-3">
         <div class="row justify-content-center">
           <div class="col-lg-3 col-md-5">
-            <div id="petitionsList" class="list-group list-group-flush"></div>
+            <div id="petitionsList"></div>
           </div>
           <div class="col-lg-9 col-md-7">
             <div id="calendar"></div>
@@ -140,7 +151,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header bordeNormal" id="headerModal">
-          <h5 class="modal-title" id="eventsModalTitle">Agendar cita</h5>
+          <h5 class="modal-title text-justify" id="eventsModalTitle">Agendar cita</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -311,8 +322,14 @@
               let name = document.getElementById("txtName").value;
               let email = document.getElementById("txtEmail").value;
               let number = document.getElementById("txtNumber").value;
-              let issue = document.getElementById("txtIssue").value;
-              guardarPeticion(name, email, number, issue);
+              let issue = document.getElementById("txtIssue").value;              
+              consultaPeticiones("guardada", {
+                idPeticion: "",
+                nombre: name,
+                email: email,
+                telefono: number,
+                asunto: issue
+              });
             }
             if (form.id == "formEvents") {
               if (form[8].value == "agendar") {

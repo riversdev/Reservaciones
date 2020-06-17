@@ -1,6 +1,6 @@
 $(document).ready(function () {
     // CONSULTAR PETICIONES PENDIENTES
-    buscarPeticiones();
+    consultaPeticiones("leer", { idPeticion: "", nombre: "", email: "", telefono: "", asunto: "" });
 
     // EVENTOS BOTONES
     $("#btnEventEdit").on('click', function () {
@@ -75,43 +75,6 @@ function insertarHoraFinal(start, end) {
     $('#' + end).attr("min", horas + ':' + minutos);
 }
 
-function buscarPeticiones() {
-    $.ajax({
-        type: "POST",
-        url: "templates/buscarPeticiones.php",
-        data: {},
-        error: function (data) {
-            console.error("Error peticion ajax para buscar peticiones");
-        },
-        success: function (data) {
-            $("#petitionsList").empty();
-            $("#petitionsList").append(data);
-        }
-    });
-}
-
-function guardarPeticion(name, email, number, issue) {
-    $.ajax({
-        type: "POST",
-        url: "templates/guardarPeticion.php",
-        data: {
-            name,
-            email,
-            number,
-            issue
-        },
-        error: function (data) {
-            console.error("Error peticion ajax para guardar la cita");
-        },
-        success: function (data) {
-            $("#res").empty();
-            $("#res").append(data);
-            alertify.alert('PETICIÓN ENVIADA !', 'En breve le haremos saber la fecha y hora de su cita madiante sus datos de contacto ingresados.');
-            buscarPeticiones();
-        }
-    });
-}
-
 function obtenerDatosGUI() {
     return {
         idPeticion: $("#eventForId").val(),
@@ -123,41 +86,6 @@ function obtenerDatosGUI() {
         telefono: $("#eventForTel").val(),
         asunto: $("#eventForIssue").val()
     };
-}
-
-function eliminarPeticion(id, email) {
-    $.ajax({
-        type: "POST",
-        url: "templates/eliminarPeticion.php",
-        data: {
-            idPeticion: id,
-            email: email
-        },
-        error: function (data) {
-            console.error("Error peticion ajax para eliminar petición, DETALLES: " + data);
-        },
-        success: function (data) {
-            buscarPeticiones();
-            alertify.success("Petición eliminada exitosamente !");
-        }
-    });
-    // ENVIO DEL CORREO
-    Email.send({
-        //SecureToken :"",
-        Host: "smtp.gmail.com",
-        Username: "secretariaTecXD@gmail.com",
-        Password: "1q2w3e4r5t?",
-        To: email,
-        From: "secretariaTecXD@gmail.com",
-        Subject: "Su cita ha sido cancelada.",
-        Body: "<b>Por este medio le informamos que su cita ha sido cancelada.</b>"
-    }).then(function (message) {
-        alertify.success("El interesado ha sido notificado !");
-    }, function (message) {
-        alertify.success("Imposible notificar al interesado !");
-        console.log(message);
-    }
-    );
 }
 
 function enviarInformacion(accion, objCita) {
@@ -179,7 +107,7 @@ function enviarInformacion(accion, objCita) {
         },
         success: function (data) {
             $("#calendar").fullCalendar('refetchEvents');
-            buscarPeticiones();
+            consultaPeticiones("leer", { idPeticion: "", nombre: "", email: "", telefono: "", asunto: "" });
             alertify.success("Cita " + accion + " exitosamente !");
         }
     });
@@ -228,4 +156,88 @@ function enviarInformacion(accion, objCita) {
         }
         );
     }
+}
+
+function consultaPeticiones(accion, objPeticion) {
+    $.ajax({
+        type: "POST",
+        url: "templates/crudPeticiones.php?accion=" + accion,
+        data: {
+            idPeticion: objPeticion.idPeticion,
+            name: objPeticion.nombre,
+            email: objPeticion.email,
+            number: objPeticion.telefono,
+            issue: objPeticion.asunto
+        },
+        error: function (data) {
+            console.error("Error peticion ajax para enviar información, DETALLES: " + data);
+        },
+        success: function (data) {
+            if (accion == "leer") {
+                $("#petitionsList").empty();
+                $("#petitionsList").append(data);
+                tabularPeticiones();
+            }
+            if (accion == "guardada") {
+                consultaPeticiones("leer", { idPeticion: "", nombre: "", email: "", telefono: "", asunto: "" });
+                alertify.alert('Petición guardada', 'En breve le haremos saber su fecha de cita mediante los datos proporcionados.');
+            }
+            if (accion == "eliminada") {
+                alertify.success("Petición eliminada exitosamente");
+                consultaPeticiones("leer", { idPeticion: "", nombre: "", email: "", telefono: "", asunto: "" });
+                // ENVIO DEL CORREO
+                Email.send({
+                    //SecureToken :"",
+                    Host: "smtp.gmail.com",
+                    Username: "secretariaTecXD@gmail.com",
+                    Password: "1q2w3e4r5t?",
+                    To: objPeticion.email,
+                    From: "secretariaTecXD@gmail.com",
+                    Subject: "Su cita ha sido cancelada.",
+                    Body: "<b>Por este medio le informamos que su cita ha sido cancelada.</b>"
+                }).then(function (message) {
+                    alertify.success("El interesado ha sido notificado");
+                }, function (message) {
+                    alertify.success("Imposible notificar al interesado !");
+                    console.log(message);
+                }
+                );
+            }
+        }
+    });
+}
+
+function tabularPeticiones() {
+    $('#tablaPeticiones').DataTable({
+        language: {
+            sProcessing: "Procesando...",
+            sLengthMenu: "Mostrar _MENU_ registros",
+            sZeroRecords: "No se encontraron resultados",
+            sEmptyTable: "Ningún dato disponible en esta tabla",
+            sInfo:
+                "Existen _TOTAL_ peticiones",
+            sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
+            sInfoFiltered: "(filtrado de un total de _MAX_ peticiones)",
+            sInfoPostFix: "",
+            sSearch: "",
+            sUrl: "",
+            sInfoThousands: ",",
+            sLoadingRecords: "Cargando...",
+            oPaginate: {
+                sFirst: "Primero",
+                sLast: "Último",
+                sNext: "Siguiente",
+                sPrevious: "Anterior"
+            },
+            aria: {
+                SortAscending: ": Activar para ordenar la columna de manera ascendente",
+                SortDescending:
+                    ": Activar para ordenar la columna de manera descendente"
+            }
+        },
+        scrollY: '65vh',
+        scrollCollapse: true,
+        "paging": false,
+        "ordering": false
+    });
 }
