@@ -25,6 +25,8 @@
   <!-- CLOCKPICKER -->
   <link rel="stylesheet" href="static/clockpicker/bootstrap-clockpicker.css">
   <script src="static/clockpicker/bootstrap-clockpicker.js"></script>
+  <!-- SMTP JS -->
+  <script src="static/js/smtp.js"></script>
   <!-- CUSTOM JS -->
   <script src="static/js/main.js"></script>
 </head>
@@ -121,11 +123,11 @@
     </div>
     <div class="tab-pane fade active" id="nav-citas" role="tabpanel" aria-labelledby="nav-citas-tab">
       <div class="p-3">
-        <div class="row justify-content-center" style="height:85vh;">
-          <div class="col-3">
-            <div id="petitionsList" class="list-group list-group-flush" style="font-size: small;"></div>
+        <div class="row justify-content-center">
+          <div class="col-lg-3 col-md-5">
+            <div id="petitionsList" class="list-group list-group-flush"></div>
           </div>
-          <div class="col-9">
+          <div class="col-lg-9 col-md-7">
             <div id="calendar"></div>
           </div>
         </div>
@@ -315,11 +317,11 @@
             if (form.id == "formEvents") {
               if (form[8].value == "agendar") {
                 $('#modalEvents').modal('hide');
-                enviarInformacion('agendada', obtenerDatosGUI()); /////// fucking instruction !!!!!!!!
+                enviarInformacion('agendada', obtenerDatosGUI());
               }
               if (form[8].value == "editar") {
                 $('#modalEvents').modal('hide');
-                enviarInformacion('actualizada', obtenerDatosGUI()); /////// fucking instruction !!!!!!!!
+                enviarInformacion('actualizada', obtenerDatosGUI());
               }
             }
           }
@@ -355,6 +357,7 @@
       },
       dayClick: function(date, jsEvent, view) {
         if (date.format() >= fechaActual) {
+          $('#eventForDate').attr("min", fechaActual);
           $('#eventForHourEnd').attr("min", "08:00");
           $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
           $('#eventForDate').removeAttr("disabled");
@@ -382,6 +385,7 @@
       },
       events: 'templates/crudCalendario.php',
       eventClick: function(calEvent, jsEvent, view) {
+        $('#eventForDate').attr("min", fechaActual);
         $("#eventsModalTitle").html(calEvent.title).removeClass("text-info").addClass("text-dark");
         $('#eventForId').val(calEvent.idCita);
         $('#eventForDate').val(calEvent.fecha).attr("disabled", "true");
@@ -392,8 +396,13 @@
         $('#eventForTel').val(calEvent.tel).attr("disabled", "true");
         $('#eventForIssue').val(calEvent.asunto).attr("disabled", "true");
         $("#btnEventCancel").addClass("d-none");
-        $("#btnEventEdit").removeClass("d-none");
-        $("#btnEventDelete").removeClass("d-none");
+        if (calEvent.fecha < fechaActual) {
+          $("#btnEventEdit").addClass("d-none");
+          $("#btnEventDelete").addClass("d-none");
+        } else {
+          $("#btnEventEdit").removeClass("d-none");
+          $("#btnEventDelete").removeClass("d-none");
+        }
         $("#btnEventAgendar").addClass("d-none");
         $("#eventForStatus").val("editar");
         $("#rowIssue").addClass("d-none");
@@ -403,15 +412,25 @@
       },
       editable: true,
       eventDrop: function(calEvent) {
-        $('#eventForId').val(calEvent.idCita);
-        $('#eventForDate').val(calEvent.start.format().split("T")[0]);
-        $('#eventForHourStart').val(calEvent.start.format().split("T")[1]);
-        $('#eventForHourEnd').val(calEvent.end.format().split("T")[1]);
-        $('#eventForName').val(calEvent.nombre);
-        $('#eventForEmail').val(calEvent.email);
-        $('#eventForTel').val(calEvent.tel);
-        $('#eventForIssue').val(calEvent.asunto);
-        enviarInformacion('actualizada', obtenerDatosGUI());
+        if (calEvent.fecha < fechaActual) {
+          alertify.error("Imposible reagendar cita");
+          $("#calendar").fullCalendar('refetchEvents');
+        } else {
+          if (calEvent.start.format().split("T")[0] < fechaActual) {
+            alertify.error("Imposible reagendar cita");
+            $("#calendar").fullCalendar('refetchEvents');
+          } else {
+            $('#eventForId').val(calEvent.idCita);
+            $('#eventForDate').val(calEvent.start.format().split("T")[0]);
+            $('#eventForHourStart').val(calEvent.start.format().split("T")[1]);
+            $('#eventForHourEnd').val(calEvent.end.format().split("T")[1]);
+            $('#eventForName').val(calEvent.nombre);
+            $('#eventForEmail').val(calEvent.email);
+            $('#eventForTel').val(calEvent.tel);
+            $('#eventForIssue').val(calEvent.asunto);
+            enviarInformacion('actualizada', obtenerDatosGUI());
+          }
+        }
       },
     });
   });

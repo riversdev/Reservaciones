@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let nuevoTiempo;
     // CONSULTAR PETICIONES PENDIENTES
     buscarPeticiones();
 
@@ -19,6 +18,7 @@ $(document).ready(function () {
         $("#eventsModalTitle").html("EDITANDO CITA").removeClass("text-dark").addClass("text-info");
         $("#rowIssue").removeClass("d-none");
         $("#headerModal").removeClass("bordeNormal").addClass("bordeEdit");
+        $('#eventForDate').attr("min", fechaActual);
     });
     $("#btnEventCancel").on('click', function () {
         $('#eventForDate').attr("disabled", "true");
@@ -41,11 +41,12 @@ $(document).ready(function () {
         let id = this.parentElement.parentElement[0].value;
         let name = this.parentElement.parentElement[4].value;
         let issue = this.parentElement.parentElement[7].value;
+        let email = this.parentElement.parentElement[5].value;
         alertify.confirm('Eliminando...', 'Seguro de que desea eliminar la cita de ' + name + ", para " + issue,
             function () {
                 $("#modalEvents").modal('hide');
                 enviarInformacion("eliminada", {
-                    idPeticion: id, fecha: "", horaInicio: "", horaFin: "", nombre: "", email: "", telefono: "", asunto: ""
+                    idPeticion: id, fecha: "", horaInicio: "", horaFin: "", nombre: "", email: email, telefono: "", asunto: ""
                 });
             },
             function () {
@@ -71,11 +72,10 @@ function insertarHoraFinal(start, end) {
     if (minutos < 10) {
         minutos = '0' + minutos;
     }
-    nuevoTiempo = horas + ':' + minutos;
-    $('#' + end).attr("min", nuevoTiempo);
+    $('#' + end).attr("min", horas + ':' + minutos);
 }
 
-async function buscarPeticiones() {
+function buscarPeticiones() {
     $.ajax({
         type: "POST",
         url: "templates/buscarPeticiones.php",
@@ -86,7 +86,6 @@ async function buscarPeticiones() {
         success: function (data) {
             $("#petitionsList").empty();
             $("#petitionsList").append(data);
-            console.log("Peticiones recuperadas exitosamente !")
         }
     });
 }
@@ -126,6 +125,41 @@ function obtenerDatosGUI() {
     };
 }
 
+function eliminarPeticion(id, email) {
+    $.ajax({
+        type: "POST",
+        url: "templates/eliminarPeticion.php",
+        data: {
+            idPeticion: id,
+            email: email
+        },
+        error: function (data) {
+            console.error("Error peticion ajax para eliminar petición, DETALLES: " + data);
+        },
+        success: function (data) {
+            buscarPeticiones();
+            alertify.success("Petición eliminada exitosamente !");
+        }
+    });
+    // ENVIO DEL CORREO
+    Email.send({
+        //SecureToken :"",
+        Host: "smtp.gmail.com",
+        Username: "secretariaTecXD@gmail.com",
+        Password: "1q2w3e4r5t?",
+        To: email,
+        From: "secretariaTecXD@gmail.com",
+        Subject: "Su cita ha sido cancelada.",
+        Body: "<b>Por este medio le informamos que su cita ha sido cancelada.</b>"
+    }).then(function (message) {
+        alertify.success("El interesado ha sido notificado !");
+    }, function (message) {
+        alertify.success("Imposible notificar al interesado !");
+        console.log(message);
+    }
+    );
+}
+
 function enviarInformacion(accion, objCita) {
     $.ajax({
         type: "POST",
@@ -149,4 +183,49 @@ function enviarInformacion(accion, objCita) {
             alertify.success("Cita " + accion + " exitosamente !");
         }
     });
+    if (accion == "eliminada") {
+        // ENVIO DEL CORREO
+        Email.send({
+            //SecureToken :"",
+            Host: "smtp.gmail.com",
+            Username: "secretariaTecXD@gmail.com",
+            Password: "1q2w3e4r5t?",
+            To: objCita.email,
+            From: "secretariaTecXD@gmail.com",
+            Subject: "Su cita ha sido cancelada.",
+            Body: "<b>Por este medio le informamos que su cita ha sido cancelada.</b>"
+        }).then(function (message) {
+            alertify.success("El interesado ha sido notificado !");
+        }, function (message) {
+            alertify.success("Imposible notificar al interesado !");
+            console.log(message);
+        }
+        );
+    }
+    else {
+        // CUERPO DEL CORREO
+        let cuerpoDelCorreo = "<b>Por este medio le proporcionamos los datos referentes a su próxima cita.</b>" +
+            "<br> <b>Fecha:</b> " + objCita.fecha +
+            "<br> <b>Hora de inicio:</b> " + objCita.horaInicio +
+            "<br> <b>Hora de término: </b>" + objCita.horaFin +
+            "<br> <b>Asunto: </b>" + objCita.asunto +
+            "<br> <b>Un cordial saludo. Le esperamos.</b>";
+        // ENVIO DEL CORREO
+        Email.send({
+            //SecureToken :"",
+            Host: "smtp.gmail.com",
+            Username: "secretariaTecXD@gmail.com",
+            Password: "1q2w3e4r5t?",
+            To: objCita.email,
+            From: "secretariaTecXD@gmail.com",
+            Subject: "Su cita ha sido " + accion + ".",
+            Body: cuerpoDelCorreo
+        }).then(function (message) {
+            alertify.success("El interesado ha sido notificado !");
+        }, function (message) {
+            alertify.success("Imposible notificar al interesado !");
+            console.log(message);
+        }
+        );
+    }
 }

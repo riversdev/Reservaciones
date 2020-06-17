@@ -7,15 +7,16 @@ $stmt->execute();
 $resultado = $stmt->fetchAll();
 
 echo '
-    <div class="list-group-item">
+    <div class="p-2 bg-light">
         <div class="w-100 justify-content-between text-center">
-            <h6 class="mb-1 font-weight-bold text-info">PETICIONES</h6>
+            <h2 class="mb-1 text-dark">Peticiones</h2>
         </div>
     </div>
     ';
 
 if (count($resultado) == 0) {
     echo '
+        <span class="p-2"></span>
         <div class="alert alert-success" role="alert">
             No existen peticiones pendientes !
         </div>
@@ -23,12 +24,12 @@ if (count($resultado) == 0) {
 } else {
     foreach ($resultado as $row) {
         echo '
-            <a id="' . $row['idPeticion'] . '" class="list-group-item list-group-item-action" data-toggle="modal" data-target="#modalPet' . $row['idPeticion'] . '">
+            <a id="' . $row['idPeticion'] . '" class="list-group-item list-group-item-action bg-dark text-white border-bottom border-light" data-toggle="modal" data-target="#modalPet' . $row['idPeticion'] . '">
                 <div class="d-flex w-100 justify-content-between">
                     <h7 class="mb-1 font-weight-bold">' . $row['nombre'] . '</h7>
                     <small class="text-muted">' . date("d-m-Y", strtotime($row['marcaDeTiempo'])) . '</small>
                 </div>
-                <p class="mb-1 text-justify">' . substr($row['asunto'], 0, 100) . '...</p>
+                <p class="mb-1 text-justify" style="font-size:small;">' . substr($row['asunto'], 0, 80) . '...</p>
                 <small class="text-muted">' . $row['email'] . '</small>
             </a>
 
@@ -148,6 +149,7 @@ if (count($resultado) == 0) {
                         </div>
                         <div class="text-right">
                             <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" id="btnEventDeletePET' . $row['idPeticion'] . '">Eliminar</button>
                             <button class="btn btn-sm btn-outline-dark" type="submit">Agendar</button>
                         </div>
                         </form>
@@ -155,7 +157,22 @@ if (count($resultado) == 0) {
                     </div>
                 </div>
             </div>
+            
             <script>
+            $("#btnEventDeletePET' . $row['idPeticion'] . '").on("click", function () {
+                $("#modalPet' . $row['idPeticion'] . '").modal("hide");
+                let id = this.parentElement.parentElement[0].value;
+                let name = this.parentElement.parentElement[4].value;
+                let issue = this.parentElement.parentElement[7].value;
+                let email = this.parentElement.parentElement[5].value;
+                alertify.confirm("Eliminando...", "Seguro de que desea eliminar la cita de " + name + ", para " + issue,
+                    function () {
+                        eliminarPeticion(id, email);
+                    },
+                    function () {
+                        alertify.error("Cancelado !")
+                    });
+            });
             $("#txtHourEndAdd' . $row['idPeticion'] . '").on("click", function () {
                 insertarHoraFinal("txtHourStartAdd' . $row['idPeticion'] . '","txtHourEndAdd' . $row['idPeticion'] . '");
             });
