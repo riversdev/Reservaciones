@@ -136,7 +136,7 @@
       <div class="p-3">
         <div class="row justify-content-center">
           <div class="col-lg-3 col-md-5">
-            <div id="petitionsList"></div>
+            <div id="petitionsList" class="bg-light pb-3"></div>
           </div>
           <div class="col-lg-9 col-md-7">
             <div id="calendar"></div>

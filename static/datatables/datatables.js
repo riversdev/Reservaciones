@@ -4191,7 +4191,7 @@
 		var language = settings.oLanguage;
 		var previousSearch = settings.oPreviousSearch;
 		var features = settings.aanFeatures;
-		var input = '<div class="row"><div class="col-2 pl-1">Buscar:</div><div class="col-10"><input type="search" class="form-control form-control-sm '+classes.sFilterInput+'"></div></div>';
+		var input = '<div class="row pr-5"><div class="col-12 pr-3"><div class="input-group input-group-sm"><div class="input-group-prepend"><div class="input-group-text"><i class="fas fa-search"></i></div></div><input type="search" class="form-control '+classes.sFilterInput+'"></div></div></div>';
 	
 		var str = language.sSearch;
 		str = str.match(/_INPUT_/) ?

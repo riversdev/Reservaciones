@@ -215,7 +215,7 @@ function tabularPeticiones() {
             sZeroRecords: "No se encontraron resultados",
             sEmptyTable: "Ningún dato disponible en esta tabla",
             sInfo:
-                "Existen _TOTAL_ peticiones",
+                "<div><span class='pl-5 pr-4'></span>Existen _TOTAL_ peticiones</div>",
             sInfoEmpty: "Mostrando registros del 0 al 0 de un total de 0 registros",
             sInfoFiltered: "(filtrado de un total de _MAX_ peticiones)",
             sInfoPostFix: "",
