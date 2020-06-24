@@ -181,6 +181,8 @@ function consultaPeticiones(accion, objPeticion) {
             if (accion == "guardada") {
                 consultaPeticiones("leer", { idPeticion: "", nombre: "", email: "", telefono: "", asunto: "" });
                 alertify.alert('Petición guardada', 'En breve le haremos saber su fecha de cita mediante los datos proporcionados.');
+                $("#petitionsList").empty();
+                $("#petitionsList").append(data);
             }
             if (accion == "eliminada") {
                 alertify.success("Petición eliminada exitosamente");
@@ -202,6 +204,8 @@ function consultaPeticiones(accion, objPeticion) {
                     console.log(message);
                 }
                 );
+                $("#petitionsList").empty();
+                $("#petitionsList").append(data);
             }
         }
     });

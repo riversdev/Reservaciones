@@ -10,7 +10,7 @@ switch ($accion) {
         $number = $_POST['number'];
         $issue = $_POST['issue'];
         # MARCA DE TIEMPO
-        $marcaDeTiempo = date("Y-m-d H:i:s");
+        $marcaDeTiempo = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . "- 1 days"));
         # GUARDANDO PETICION
         $SQL = "INSERT INTO peticiones (nombre, email, tel, asunto, marcaDeTiempo) 
         VALUES ('$name', '$email', '$number', '$issue', '$marcaDeTiempo')";
@@ -86,7 +86,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Fecha</div>
                                             </div>
-                                            <input type="date" class="form-control" id="txtDateAdd" min="' . date("Y-m-d",strtotime(date("Y-m-d")."- 1 days")) . '" value="" required>
+                                            <input type="date" class="form-control" id="txtDateAdd" min="' . date("Y-m-d", strtotime(date("Y-m-d") . "- 1 days")) . '" value="" required>
                                             <div class="valid-feedback">
                                             Correcto!
                                             </div>
