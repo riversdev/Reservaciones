@@ -322,7 +322,7 @@
               let name = document.getElementById("txtName").value;
               let email = document.getElementById("txtEmail").value;
               let number = document.getElementById("txtNumber").value;
-              let issue = document.getElementById("txtIssue").value;              
+              let issue = document.getElementById("txtIssue").value;
               consultaPeticiones("guardada", {
                 idPeticion: "",
                 nombre: name,
@@ -373,7 +373,7 @@
         right: 'month,basicWeek,basicDay,listWeek',
       },
       dayClick: function(date, jsEvent, view) {
-        if (date.format() >= fechaActual) {
+        if (date.format() > fechaActual) {
           $('#eventForDate').attr("min", fechaActual);
           $('#eventForHourEnd').attr("min", "08:00");
           $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
@@ -396,6 +396,38 @@
           $("#rowIssue").removeClass("d-none");
           $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
           $('#modalEvents').modal();
+        } else if (date.format() == fechaActual) {
+          if (f.getHours < 20) {
+            let horas = f.getHours();
+            let minutos = f.getMinutes();
+            horas < 10 ? horas = '0' + horas : horas = horas;
+            minutos < 10 ? minutos = '0' + minutos : minutos = minutos;
+            $('#eventForDate').attr("min", fechaActual);
+            $('#eventForHourStart').attr("min", horas + ':' + minutos);
+            $('#eventForHourEnd').attr("min", "08:00");
+            $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
+            $('#eventForDate').removeAttr("disabled");
+            $('#eventForHourStart').removeAttr("disabled");
+            $('#eventForHourEnd').removeAttr("disabled");
+            $('#eventForName').removeAttr("disabled");
+            $('#eventForEmail').removeAttr("disabled");
+            $('#eventForTel').removeAttr("disabled");
+            $('#eventForIssue').removeAttr("disabled");
+            $("#btnEventCancel").addClass("d-none");
+            $("#btnEventEdit").addClass("d-none");
+            $("#btnEventDelete").addClass("d-none");
+            $("#btnEventAgendar").removeClass("d-none");
+            document.getElementById("formEvents").reset();
+            $('#eventForDate').val(date.format());
+            $('#eventForHourStart').val("00:00");
+            $('#eventForHourEnd').val("00:00");
+            $("#eventForStatus").val("agendar");
+            $("#rowIssue").removeClass("d-none");
+            $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
+            $('#modalEvents').modal();
+          } else {
+            alertify.error("Imposible agendar cita");
+          }
         } else {
           alertify.error("Imposible agendar cita");
         }

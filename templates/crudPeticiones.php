@@ -86,7 +86,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Fecha</div>
                                             </div>
-                                            <input type="date" class="form-control" id="txtDateAdd" min="' . date("Y-m-d", strtotime(date("Y-m-d") . "- 1 days")) . '" value="" required>
+                                            <input type="date" class="form-control" id="txtDateAdd' . $row['idPeticion'] . '" min="' . date("Y-m-d", strtotime(date("Y-m-d") . "- 1 days")) . '" value="" required>
                                             <div class="valid-feedback">
                                             Correcto!
                                             </div>
@@ -149,7 +149,7 @@ switch ($accion) {
                                                 <div class="input-group-prepend">
                                                 <div class="input-group-text">Nombre</div>
                                                 </div>
-                                                <input type="text" class="form-control" id="txtNameAdd" value="' . $row['nombre'] . '" disabled>
+                                                <input type="text" class="form-control" id="txtNameAdd' . $row['idPeticion'] . '" value="' . $row['nombre'] . '" disabled>
                                             </div>
                                             </div>
                                         </div>
@@ -159,7 +159,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Email</div>
                                             </div>
-                                            <input type="email" class="form-control" id="txtEmailAdd" value="' . $row['email'] . '" disabled>
+                                            <input type="email" class="form-control" id="txtEmailAdd' . $row['idPeticion'] . '" value="' . $row['email'] . '" disabled>
                                         </div>
                                         </div>
                                         <div class="col-md-5 mb-3">
@@ -167,7 +167,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Teléfono</div>
                                             </div>
-                                            <input type="tel" class="form-control" id="txtNumberAdd" value="' . $row['tel'] . '" disabled>
+                                            <input type="tel" class="form-control" id="txtNumberAdd' . $row['idPeticion'] . '" value="' . $row['tel'] . '" disabled>
                                         </div>
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Asunto</div>
                                             </div>
-                                            <textarea class="form-control" id="txtIssueAdd" cols="30" rows="3" disabled>' . $row['asunto'] . '</textarea>
+                                            <textarea class="form-control" id="txtIssueAdd' . $row['idPeticion'] . '" cols="30" rows="3" disabled>' . $row['asunto'] . '</textarea>
                                         </div>
                                         </div>
                                     </div>
@@ -210,6 +210,9 @@ switch ($accion) {
                         $("#txtHourEndAdd' . $row['idPeticion'] . '").on("click", function () {
                             insertarHoraFinal("txtHourStartAdd' . $row['idPeticion'] . '","txtHourEndAdd' . $row['idPeticion'] . '");
                         });
+                        $("#txtHourStartAdd' . $row['idPeticion'] . '").on("click", function () {
+                            insertarHoraInicial("txtHourStartAdd' . $row['idPeticion'] . '","txtDateAdd' . $row['idPeticion'] . '");
+                        });
                     </script>
                     </td>
                     </tr>
@@ -222,30 +225,36 @@ switch ($accion) {
                     var forms = document.getElementsByClassName("needs-validation");
                     var validation = Array.prototype.filter.call(forms, function(form) {
                         form.addEventListener("submit", function(event) {
+                            let x = "txtHourStartAdd" + form[0].value;
+                            let z = "txtDateAdd" + form[0].value;
+                            insertarHoraInicial(x, z);
                             let i = "txtHourStartAdd" + form[0].value;
                             let f = "txtHourEndAdd" + form[0].value;
-                            insertarHoraFinal(i,f);
+                            insertarHoraFinal(i, f);
                             if (form.checkValidity() === false) {
                                 event.preventDefault();
                                 event.stopPropagation();
                             } else {
                                 event.preventDefault();
-                                if(form.id=="formEvents"||form.id=="formAppointment"){
-
-                                }
+                                if(form.id=="formEvents"||form.id=="formAppointment"){}
                                 else {
-                                    let objCita' . $row['idPeticion'] . ' = {
-                                        idPeticion : form[0].value,
-                                        fecha : form[1].value,
-                                        horaInicio : form[2].value,
-                                        horaFin : form[3].value,
-                                        nombre : form[4].value,
-                                        email : form[5].value,
-                                        telefono : form[6].value,
-                                        asunto : form[7].value
-                                    };
-                                    $("#modalPet" + form[0].value).modal("hide");
-                                    enviarInformacion("agendada", objCita' . $row['idPeticion'] . ');
+                                    if (form.checkValidity() === false) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                    } else {
+                                        let objCita' . $row['idPeticion'] . ' = {
+                                            idPeticion : form[0].value,
+                                            fecha : form[1].value,
+                                            horaInicio : form[2].value,
+                                            horaFin : form[3].value,
+                                            nombre : form[4].value,
+                                            email : form[5].value,
+                                            telefono : form[6].value,
+                                            asunto : form[7].value
+                                        };
+                                        $("#modalPet" + form[0].value).modal("hide");
+                                        enviarInformacion("agendada", objCita' . $row['idPeticion'] . ');
+                                    }
                                 }
                             }
                             form.classList.add("was-validated");

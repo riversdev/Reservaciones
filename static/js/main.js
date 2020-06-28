@@ -54,6 +54,11 @@ $(document).ready(function () {
             });
     });
 
+    // CAMBIO DE HORA MINIMO EN INPUT TIME DE HORA DE INICIO
+    $('#eventForHourStart').on('click', function () {
+        insertarHoraInicial("eventForHourStart", "eventForDate");
+    });
+
     // CAMBIO DE HORA MINIMO EN INPUT TIME DE HORA DE TERMINO
     $('#eventForHourEnd').on('click', function () {
         insertarHoraFinal("eventForHourStart", "eventForHourEnd");
@@ -61,17 +66,47 @@ $(document).ready(function () {
 
 });
 
+function insertarHoraInicial(start, fecha) {
+    // FECHA ACTUAL RECUPERADA CON JS
+    let fechaActual = new Date();
+    let anio = fechaActual.getFullYear();
+    let mes = fechaActual.getMonth() + 1;
+    let dia = fechaActual.getDate();
+    mes < 10 ? mes = '0' + mes : mes = mes;
+    dia < 10 ? dia = '0' + dia : dia = dia;
+    let cadFechaActual = anio + '-' + mes + '-' + dia;
+
+    // RECUPERACION DE FECHA SELECCIONADA
+    let fechaSeleccionada = new Date($('#' + fecha).val());
+    fechaSeleccionada.setDate(fechaSeleccionada.getDate() + 1);
+    let anioFS = fechaSeleccionada.getFullYear();
+    let mesFS = fechaSeleccionada.getMonth() + 1;
+    let diaFS = fechaSeleccionada.getDate();
+    mesFS < 10 ? mesFS = '0' + mesFS : mesFS = mesFS;
+    diaFS < 10 ? diaFS = '0' + diaFS : diaFS = diaFS;
+    let cadFechaSeleccionada = anioFS + '-' + mesFS + '-' + diaFS;
+
+    // SI LA FECHA ACTUAL ES LA MISMA QUE LA SELECCIONADA SE ESTABLECE LA HORA ACTUAL COMO LA MINIMA
+    if (cadFechaSeleccionada == cadFechaActual) {
+        let horas = fechaActual.getHours();
+        let minutos = fechaActual.getMinutes();
+        horas < 10 ? horas = '0' + horas : horas = horas;
+        minutos < 10 ? minutos = '0' + minutos : minutos = minutos;
+        $('#' + start).attr("min", horas + ':' + minutos);
+        console.log("1->" + $('#' + start).attr("min"));
+    } else {
+        $('#' + start).attr("min", '08:00');
+        console.log("2->" + $('#' + start).attr("min"));
+    }
+}
+
 function insertarHoraFinal(start, end) {
     let newTime = new Date('2000-01-01T' + $('#' + start).val());
     newTime.setMinutes(newTime.getMinutes() + 1);
     let horas = newTime.getHours();
     let minutos = newTime.getMinutes();
-    if (horas < 10) {
-        horas = '0' + horas;
-    }
-    if (minutos < 10) {
-        minutos = '0' + minutos;
-    }
+    horas < 10 ? horas = '0' + horas : horas = horas;
+    minutos < 10 ? minutos = '0' + minutos : minutos = minutos;
     $('#' + end).attr("min", horas + ':' + minutos);
 }
 
