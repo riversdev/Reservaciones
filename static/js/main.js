@@ -93,10 +93,8 @@ function insertarHoraInicial(start, fecha) {
         horas < 10 ? horas = '0' + horas : horas = horas;
         minutos < 10 ? minutos = '0' + minutos : minutos = minutos;
         $('#' + start).attr("min", horas + ':' + minutos);
-        console.log("1->" + $('#' + start).attr("min"));
     } else {
         $('#' + start).attr("min", '08:00');
-        console.log("2->" + $('#' + start).attr("min"));
     }
 }
 
