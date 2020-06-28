@@ -10,7 +10,7 @@ switch ($accion) {
         $number = $_POST['number'];
         $issue = $_POST['issue'];
         # MARCA DE TIEMPO
-        $marcaDeTiempo = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . "- 1 days"));
+        $marcaDeTiempo = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s") . "- 7 hours"));
         # GUARDANDO PETICION
         $SQL = "INSERT INTO peticiones (nombre, email, tel, asunto, marcaDeTiempo) 
         VALUES ('$name', '$email', '$number', '$issue', '$marcaDeTiempo')";
@@ -86,7 +86,7 @@ switch ($accion) {
                                             <div class="input-group-prepend">
                                             <div class="input-group-text">Fecha</div>
                                             </div>
-                                            <input type="date" class="form-control" id="txtDateAdd' . $row['idPeticion'] . '" min="' . date("Y-m-d", strtotime(date("Y-m-d") . "- 1 days")) . '" value="" required>
+                                            <input type="date" class="form-control" id="txtDateAdd' . $row['idPeticion'] . '" min="' . date("Y-m-d", strtotime(date("Y-m-d H:i:s") . "- 7 hours")) . '" value="" required>
                                             <div class="valid-feedback">
                                             Correcto!
                                             </div>
@@ -225,12 +225,15 @@ switch ($accion) {
                     var forms = document.getElementsByClassName("needs-validation");
                     var validation = Array.prototype.filter.call(forms, function(form) {
                         form.addEventListener("submit", function(event) {
-                            let x = "txtHourStartAdd" + form[0].value;
-                            let z = "txtDateAdd" + form[0].value;
-                            insertarHoraInicial(x, z);
-                            let i = "txtHourStartAdd" + form[0].value;
-                            let f = "txtHourEndAdd" + form[0].value;
-                            insertarHoraFinal(i, f);
+                            if(form.id=="formEvents"||form.id=="formAppointment"){}
+                            else {
+                                let x = "txtHourStartAdd" + form[0].value;
+                                let z = "txtDateAdd" + form[0].value;
+                                insertarHoraInicial(x, z);
+                                let i = "txtHourStartAdd" + form[0].value;
+                                let f = "txtHourEndAdd" + form[0].value;
+                                insertarHoraFinal(i, f);
+                            }
                             if (form.checkValidity() === false) {
                                 event.preventDefault();
                                 event.stopPropagation();

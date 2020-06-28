@@ -312,7 +312,10 @@
       // Bucle sobre los formularios y evitar el envio o enviar datos
       var validation = Array.prototype.filter.call(forms, function(form) {
         form.addEventListener('submit', function(event) {
-          insertarHoraFinal("eventForHourStart", "eventForHourEnd"); // ADELANTAR UN MINUTO A LA HORA DE INICIO PARA LA HORA DE FIN
+          if (form.id == "formEvents") {
+            insertarHoraInicial("eventForHourStart", "eventForDate");
+            insertarHoraFinal("eventForHourStart", "eventForHourEnd"); // ADELANTAR UN MINUTO A LA HORA DE INICIO PARA LA HORA DE FIN
+          }
           if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
@@ -375,7 +378,10 @@
       dayClick: function(date, jsEvent, view) {
         if (date.format() > fechaActual) {
           $('#eventForDate').attr("min", fechaActual);
+          $('#eventForHourStart').attr("min", "08:00");
           $('#eventForHourEnd').attr("min", "08:00");
+          $('#eventForHourStart').attr("max", "20:00");
+          $('#eventForHourEnd').attr("max", "20:00");
           $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
           $('#eventForDate').removeAttr("disabled");
           $('#eventForHourStart').removeAttr("disabled");
@@ -397,13 +403,9 @@
           $("#headerModal").removeClass("bordeEdit").addClass("bordeNormal");
           $('#modalEvents').modal();
         } else if (date.format() == fechaActual) {
-          if (f.getHours < 20) {
-            let horas = f.getHours();
-            let minutos = f.getMinutes();
-            horas < 10 ? horas = '0' + horas : horas = horas;
-            minutos < 10 ? minutos = '0' + minutos : minutos = minutos;
+          if (f.getHours() < 20 && f.getHours() >= 8) {
             $('#eventForDate').attr("min", fechaActual);
-            $('#eventForHourStart').attr("min", horas + ':' + minutos);
+            insertarHoraInicial("eventForHourStart", "eventForDate");
             $('#eventForHourEnd').attr("min", "08:00");
             $("#eventsModalTitle").html("Agendar cita").removeClass("text-info").addClass("text-dark");
             $('#eventForDate').removeAttr("disabled");
